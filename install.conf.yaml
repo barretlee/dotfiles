@@ -1,0 +1,38 @@
+- defaults:
+    link:
+      relink: true
+    shell:
+      stdin: true
+      stdout: true
+
+- clean:
+  - '~'
+
+- shell:
+  - command -v brew >/dev/null || $(which ruby) -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  - "[ '$(brew tap | grep bundle)' ] && brew tap Homebrew/bundle"
+  - brew cask list | grep -q `awk -F "\"" 'END{ print $2 }' Brewfile` || brew bundle --no-upgrade
+
+- shell:
+  # - $(brew --prefix)/opt/fzf/install --all
+  - sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+  - rm ~/.zshrc
+
+- link:
+    ~/.sh: sh
+    ~/.zshrc: zsh/.zshrc
+    ~/.zsh: zsh/.zsh
+    ~/.gitconfig: git/.gitconfig
+    ~/.tern-config: .tern-config
+
+- shell:
+  - source ~/.zshrc
+
+- shell:
+  - xcode-select --install
+
+- shell:
+  - command -v nvm >/dev/null || curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+
+- shell:
+  - yarn global list | grep -q whistle || yarn global add typescript tldr prettier nodemon whistle
